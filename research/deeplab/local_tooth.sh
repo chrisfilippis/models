@@ -28,7 +28,7 @@ set -e
 
 # Move one-level up to tensorflow/models/research directory.
 
-cd ../
+cd ..
 # Update PYTHONPATH.
 # export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
@@ -37,7 +37,7 @@ CURRENT_DIR=$(pwd)
 WORK_DIR="${CURRENT_DIR}/deeplab"
 
 # Run model_test first to make sure the PYTHONPATH is correctly set.
-# python "${WORK_DIR}"/model_test.py
+python "${WORK_DIR}"/model_test.py
 
 # Go to datasets folder and download PASCAL VOC 2012 segmentation dataset.
 DATASET_DIR="datasets"
@@ -100,6 +100,8 @@ else
 fi
 
 cd "${CURRENT_DIR}"
+
+pwd
 
 # Train 10 iterations.
 NUM_ITERATIONS=10
