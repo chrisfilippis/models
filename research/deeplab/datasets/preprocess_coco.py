@@ -132,7 +132,7 @@ def get_polygons_for_image(regions):
     return regions_data
 
 
-def process_data(input_directory, output_directory, index_file, force_load=False):
+def process_data(input_directory, output_directory, index_file='index.txt', force_load=False):
     # input_directory = 'C:\\Projects\\tooth_damage_detection\\data\\annotator\\'
     # images_directory = 'C:\\Projects\\tooth_damage_detection\\data\\annotator\\'
     output_directory = os.path.abspath(output_directory)

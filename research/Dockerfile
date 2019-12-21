@@ -1,18 +1,22 @@
 FROM tensorflow/tensorflow:1.15.0-gpu-py3
 
 RUN python --version
+
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get update && apt-get install -y git
+
 # For GPU
 RUN pip install --upgrade pip
-RUN pip install tensorflow
 RUN pip install Pillow
 RUN pip install numpy
 RUN pip install jupyter
 RUN pip install matplotlib
 RUN pip install PrettyTable
+RUN pip install read-roi==1.5.1
+RUN pip install opencv-python
 
 WORKDIR /var/project
 
-RUN apt-get update && apt-get install -y git
 RUN git clone https://github.com/chrisfilippis/models.git .
 
 RUN cd research
