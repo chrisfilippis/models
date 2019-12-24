@@ -115,7 +115,7 @@ python "${WORK_DIR}"/train.py \
   --output_stride=16 \
   --decoder_output_stride=4 \
   --train_crop_size="${DIM}" \
-  --train_batch_size=4 \
+  --train_batch_size=2 \
   --training_number_of_steps="${NUM_ITERATIONS}" \
   --fine_tune_batch_norm=true \
   --tf_initial_checkpoint="${INIT_FOLDER}/deeplabv3_pascal_train_aug/model.ckpt" \
