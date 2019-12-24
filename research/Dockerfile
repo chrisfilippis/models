@@ -19,7 +19,7 @@ WORKDIR /var/project
 
 COPY . /var/project/
 
-RUN python research/deeplab/model_test.py
+CMD ["python", "/var/project/research/deeplab/model_test.py"]
 
 
 # RUN cd research
