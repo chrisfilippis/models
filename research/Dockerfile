@@ -17,10 +17,13 @@ RUN pip install opencv-python
 
 WORKDIR /var/project
 
-RUN git clone https://github.com/chrisfilippis/models.git .
+COPY . /var/project/
 
-RUN cd research
-RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+RUN python research/deeplab/model_test.py
+
+
+# RUN cd research
+# RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
 
 # FROM tensorflow/tensorflow:1.15.0-py3
