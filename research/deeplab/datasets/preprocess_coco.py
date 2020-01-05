@@ -169,7 +169,6 @@ def process_data(input_directory, output_directory, index_file='index.txt', forc
     files = []
 
     for annotation_filename in annotation_files:
-        print('opening... ' + annotation_filename)
 
         image_name, name_mappings = get_image_name(annotation_filename, name_mapping)
         name_mapping = name_mappings
@@ -198,8 +197,6 @@ def process_data(input_directory, output_directory, index_file='index.txt', forc
         cv2.imwrite(os.path.join(masks_dir, image_name.replace('.jpg', '.png')), mask)
         cv2.imwrite(os.path.join(images_dir, image_name), image)
         files.append(image_name.replace('.jpg', ''))
-
-        print(str(len(regions)) + ' regions found')
 
     with open(index_file, 'w') as outfile:
         for img in files:
