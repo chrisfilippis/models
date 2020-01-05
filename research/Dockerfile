@@ -15,6 +15,7 @@ RUN pip install PrettyTable
 RUN pip install read-roi==1.5.1
 RUN pip install opencv-python
 
+WORKDIR /var/project/deeplab/datasets/tooth/init_models
 WORKDIR /var/project
 
 COPY . /var/project/
