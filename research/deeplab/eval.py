@@ -163,8 +163,6 @@ def main(unused_argv):
     labels = tf.cast(tf.gather(labels, indices), tf.int32)
     predictions = tf.gather(predictions, indices)
 
-    print('labels', len(labels))
-
     num_classes = dataset.num_of_classes
     metric_map['eval/%s_overall' % predictions_tag] = tf.metrics.mean_iou(
         labels=labels, predictions=predictions, num_classes=num_classes,
