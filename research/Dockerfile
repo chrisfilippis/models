@@ -20,9 +20,6 @@ WORKDIR /var/project
 
 COPY . /var/project/
 
-CMD ["python", "/var/project/research/deeplab/model_test.py"]
-
-
 # RUN cd research
 # RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
