@@ -271,7 +271,7 @@ def _build_deeplab(iterator, outputs_to_num_classes, ignore_label):
 
 
 def main(unused_argv):
-  tf.logging.set_verbosity(tf.logging.INFO)
+  tf.logging.set_verbosity(tf.logging.ERROR)
   # Set up deployment (i.e., multi-GPUs and/or multi-replicas).
   config = model_deploy.DeploymentConfig(
       num_clones=FLAGS.num_clones,
