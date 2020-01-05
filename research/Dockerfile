@@ -20,6 +20,8 @@ WORKDIR /var/project
 
 COPY . /var/project/
 
+ENTRYPOINT echo "Hello, Tensorflow"
+
 # RUN cd research
 # RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
