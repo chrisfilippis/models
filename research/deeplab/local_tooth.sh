@@ -117,7 +117,7 @@ python "${WORK_DIR}"/train.py \
   --train_crop_size="${DIM}" \
   --train_batch_size=2 \
   --training_number_of_steps="${NUM_ITERATIONS}" \
-  --fine_tune_batch_norm=true \
+  --fine_tune_batch_norm=false \
   --tf_initial_checkpoint="${INIT_FOLDER}/deeplabv3_pascal_train_aug/model.ckpt" \
   --train_logdir="${TRAIN_LOGDIR}" \
   --dataset_dir="${OUTPUT_DIR}"
