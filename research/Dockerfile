@@ -20,7 +20,8 @@ WORKDIR /var/project
 
 COPY . /var/project/
 
-ENTRYPOINT echo "Hello, Tensorflow"
+# ENTRYPOINT echo "Hello, Tensorflow"
+CMD ["python", "--version"]
 
 # RUN cd research
 # RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
