@@ -27,6 +27,7 @@
 set -e
 
 # Move one-level up to tensorflow/models/research directory.
+git pull
 
 cd ..
 # Update PYTHONPATH.
