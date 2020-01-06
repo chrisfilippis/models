@@ -20,8 +20,10 @@ WORKDIR /var/project
 
 COPY . /var/project/
 
+WORKDIR /var/project/deeplab/
+
 # ENTRYPOINT echo "Hello, Tensorflow"
-CMD ["python", "--version"]
+CMD ["sh", "run_tooth.sh"]
 
 # RUN cd research
 # RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
