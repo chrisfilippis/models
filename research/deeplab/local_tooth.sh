@@ -72,6 +72,7 @@ python build_tooth_data.py \
 
 # Set up the working directories.
 DIM="1024,768"
+DIM_EVAL="1025,769"
 EXP_FOLDER="exp/train_on_trainval_set"
 INIT_FOLDER="${WORK_DIR}/${DATASET_DIR}/${TOOTH_FOLDER}/init_models"
 TRAIN_LOGDIR="${WORK_DIR}/${DATASET_DIR}/${TOOTH_FOLDER}/${EXP_FOLDER}/train"
@@ -120,9 +121,7 @@ python "${WORK_DIR}"/train.py \
   --fine_tune_batch_norm=false \
   --tf_initial_checkpoint="${INIT_FOLDER}/deeplabv3_pascal_train_aug/model.ckpt" \
   --train_logdir="${TRAIN_LOGDIR}" \
-  --dataset_dir="${OUTPUT_DIR}" \
-  --min_scale_factor=1 \
-  --max_scale_factor=1
+  --dataset_dir="${OUTPUT_DIR}"
 
 # Run evaluation. This performs eval over the full val split (1449 images) and
 # will take a while.
@@ -136,7 +135,7 @@ python "${WORK_DIR}"/eval.py \
   --atrous_rates=18 \
   --output_stride=16 \
   --decoder_output_stride=4 \
-  --eval_crop_size="${DIM}" \
+  --eval_crop_size="${DIM_EVAL}" \
   --checkpoint_dir="${TRAIN_LOGDIR}" \
   --eval_logdir="${EVAL_LOGDIR}" \
   --dataset_dir="${OUTPUT_DIR}" \
