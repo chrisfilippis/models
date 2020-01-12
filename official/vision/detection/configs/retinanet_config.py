@@ -32,6 +32,7 @@ RETINANET_CFG = {
     'type': 'retinanet',
     'model_dir': '',
     'use_tpu': True,
+    'strategy_type': 'tpu',
     'train': {
         'batch_size': 64,
         'iterations_per_loop': 500,
@@ -39,7 +40,7 @@ RETINANET_CFG = {
         'optimizer': {
             'type': 'momentum',
             'momentum': 0.9,
-            'nesterov': True,
+            'nesterov': True,  # `False` is better for TPU v3-128.
         },
         'learning_rate': {
             'type': 'step',

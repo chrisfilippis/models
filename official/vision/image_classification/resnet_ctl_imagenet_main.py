@@ -18,6 +18,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
+
 from absl import app
 from absl import flags
 from absl import logging
@@ -197,6 +199,9 @@ def run(flags_obj):
         'mixed_bfloat16')
     tf.compat.v2.keras.mixed_precision.experimental.set_policy(policy)
 
+  # This only affects GPU.
+  common.set_cudnn_batchnorm_mode()
+
   # TODO(anj-s): Set data_format without using Keras.
   data_format = flags_obj.data_format
   if data_format is None:
@@ -225,6 +230,7 @@ def run(flags_obj):
                                           flags_obj.log_steps)
 
   with distribution_utils.get_strategy_scope(strategy):
+    resnet_model.change_keras_layer(flags_obj.use_tf_keras_layers)
     model = resnet_model.resnet50(
         num_classes=imagenet_preprocessing.NUM_CLASSES,
         batch_size=flags_obj.batch_size,
@@ -253,6 +259,14 @@ def run(flags_obj):
       optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(
           optimizer, loss_scale)
 
+    current_step = 0
+    checkpoint = tf.train.Checkpoint(model=model, optimizer=optimizer)
+    latest_checkpoint = tf.train.latest_checkpoint(flags_obj.model_dir)
+    if latest_checkpoint:
+      checkpoint.restore(latest_checkpoint)
+      logging.info("Load checkpoint %s", latest_checkpoint)
+      current_step = optimizer.iterations.numpy()
+
     train_loss = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
     training_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
         'training_accuracy', dtype=tf.float32)
@@ -274,13 +288,12 @@ def run(flags_obj):
         num_replicas = tf.distribute.get_strategy().num_replicas_in_sync
 
         if flags_obj.single_l2_loss_op:
-          filtered_variables = [
-              tf.reshape(v, (-1,))
+          l2_loss = resnet_model.L2_WEIGHT_DECAY * 2 * tf.add_n([
+              tf.nn.l2_loss(v)
               for v in trainable_variables
               if 'bn' not in v.name
-          ]
-          l2_loss = resnet_model.L2_WEIGHT_DECAY * 2 * tf.nn.l2_loss(
-              tf.concat(filtered_variables, axis=0))
+          ])
+
           loss += (l2_loss / num_replicas)
         else:
           loss += (tf.reduce_sum(model.losses) / num_replicas)
@@ -338,7 +351,7 @@ def run(flags_obj):
 
     train_iter = iter(train_ds)
     time_callback.on_train_begin()
-    for epoch in range(train_epochs):
+    for epoch in range(current_step // per_epoch_steps, train_epochs):
       train_loss.reset_states()
       training_accuracy.reset_states()
 
@@ -375,6 +388,12 @@ def run(flags_obj):
                      test_loss.result().numpy(),
                      test_accuracy.result().numpy(),
                      epoch + 1)
+
+      if flags_obj.enable_checkpoint_and_export:
+        checkpoint_name = checkpoint.save(
+            os.path.join(flags_obj.model_dir,
+                         'model.ckpt-{}'.format(epoch + 1)))
+        logging.info('Saved checkpoint to %s', checkpoint_name)
 
       if summary_writer:
         current_steps = steps_in_current_epoch + (epoch * per_epoch_steps)

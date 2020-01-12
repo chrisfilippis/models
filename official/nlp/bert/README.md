@@ -3,11 +3,7 @@
 The academic paper which describes BERT in detail and provides full results on a
 number of tasks can be found here: https://arxiv.org/abs/1810.04805.
 
-This repository contains TensorFlow 2 implementation for BERT.
-
-N.B. This repository is under active development. Though we intend
-to keep the top-level BERT Keras model interface stable, expect continued
-changes to the training code, utility function interface and flags.
+This repository contains TensorFlow 2.x implementation for BERT.
 
 ## Contents
   * [Contents](#contents)
@@ -110,8 +106,8 @@ pip install tf-nightly
 ```
 
 Warning: More details TPU-specific set-up instructions and tutorial should come
-along with official TF 2.x release for TPU. Note that this repo is not officially
-supported by Google Cloud TPU team yet.
+along with official TF 2.x release for TPU. Note that this repo is not
+officially supported by Google Cloud TPU team yet until TF 2.1 released.
 
 ## Process Datasets
 
@@ -141,7 +137,7 @@ and unpack it to some directory `$GLUE_DIR`.
 
 ```shell
 export GLUE_DIR=~/glue
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 
 export TASK_NAME=MNLI
 export OUTPUT_DIR=gs://some_bucket/datasets
@@ -172,7 +168,7 @@ The necessary files can be found here:
 ```shell
 export SQUAD_DIR=~/squad
 export SQUAD_VERSION=v1.1
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 export OUTPUT_DIR=gs://some_bucket/datasets
 
 python create_finetuning_data.py \
@@ -190,7 +186,7 @@ python create_finetuning_data.py \
 * Cloud Storage
 
 The unzipped pre-trained model files can also be found in the Google Cloud
-Storage folder `gs://cloud-tpu-checkpoints/bert/tf_20`. For example:
+Storage folder `gs://cloud-tpu-checkpoints/bert/keras_bert`. For example:
 
 ```shell
 export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
@@ -221,7 +217,7 @@ For GPU memory of 16GB or smaller, you may try to use `BERT-Base`
 (uncased_L-12_H-768_A-12).
 
 ```shell
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 export MODEL_DIR=gs://some_bucket/my_output_dir
 export GLUE_DIR=gs://some_bucket/datasets
 export TASK=MRPC
@@ -239,14 +235,14 @@ python run_classifier.py \
   --learning_rate=2e-5 \
   --num_train_epochs=3 \
   --model_dir=${MODEL_DIR} \
-  --distribution_strategy=mirror
+  --distribution_strategy=mirrored
 ```
 
 To use TPU, you only need to switch distribution strategy type to `tpu` with TPU
 information and use remote storage for model checkpoints.
 
 ```shell
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 export TPU_IP_ADDRESS='???'
 export MODEL_DIR=gs://some_bucket/my_output_dir
 export GLUE_DIR=gs://some_bucket/datasets
@@ -278,7 +274,7 @@ For GPU memory of 16GB or smaller, you may try to use `BERT-Base`
 (uncased_L-12_H-768_A-12).
 
 ```shell
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 export SQUAD_DIR=gs://some_bucket/datasets
 export MODEL_DIR=gs://some_bucket/my_output_dir
 export SQUAD_VERSION=v1.1
@@ -295,14 +291,14 @@ python run_squad.py \
   --learning_rate=8e-5 \
   --num_train_epochs=2 \
   --model_dir=${MODEL_DIR} \
-  --distribution_strategy=mirror
+  --distribution_strategy=mirrored
 ```
 
 To use TPU, you need switch distribution strategy type to `tpu` with TPU
 information.
 
 ```shell
-export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16
+export BERT_BASE_DIR=gs://cloud-tpu-checkpoints/bert/keras_bert/uncased_L-24_H-1024_A-16
 export TPU_IP_ADDRESS='???'
 export MODEL_DIR=gs://some_bucket/my_output_dir
 export SQUAD_DIR=gs://some_bucket/datasets

@@ -28,7 +28,7 @@ from official.vision.detection.dataloader import mode_keys as ModeKeys
 
 
 class InputFn(object):
-  """Input function for tf.Estimator."""
+  """Input function that creates dataset from files."""
 
   def __init__(self,
                file_pattern: Text,
@@ -64,7 +64,7 @@ class InputFn(object):
         self._input_sharding = params.train.input_sharding
       else:
         self._input_sharding = params.eval.input_sharding
-    except KeyError:
+    except AttributeError:
       pass
 
   def __call__(self, ctx=None, batch_size: int = None):
@@ -94,7 +94,9 @@ class InputFn(object):
     dataset = dataset.cache()
 
     if self._is_training:
-      dataset = dataset.shuffle(64)
+      # Large shuffle size is critical for 2vm input pipeline. Can use small
+      # value (e.g. 64) for 1vm.
+      dataset = dataset.shuffle(1000)
     if self._num_examples > 0:
       dataset = dataset.take(self._num_examples)
 

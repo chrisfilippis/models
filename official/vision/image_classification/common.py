@@ -17,7 +17,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import multiprocessing
 import os
 
 from absl import flags
@@ -174,32 +173,6 @@ class PiecewiseConstantDecayWithWarmup(
     }
 
 
-def set_gpu_thread_mode_and_count(flags_obj):
-  """Set GPU thread mode and count, and adjust dataset threads count."""
-  cpu_count = multiprocessing.cpu_count()
-  tf.compat.v1.logging.info('Logical CPU cores: %s', cpu_count)
-
-  # Allocate private thread pool for each GPU to schedule and launch kernels
-  per_gpu_thread_count = flags_obj.per_gpu_thread_count or 2
-  os.environ['TF_GPU_THREAD_MODE'] = flags_obj.tf_gpu_thread_mode
-  os.environ['TF_GPU_THREAD_COUNT'] = str(per_gpu_thread_count)
-  tf.compat.v1.logging.info('TF_GPU_THREAD_COUNT: %s',
-                            os.environ['TF_GPU_THREAD_COUNT'])
-  tf.compat.v1.logging.info('TF_GPU_THREAD_MODE: %s',
-                            os.environ['TF_GPU_THREAD_MODE'])
-
-  # Limit data preprocessing threadpool to CPU cores minus number of total GPU
-  # private threads and memory copy threads.
-  total_gpu_thread_count = per_gpu_thread_count * flags_obj.num_gpus
-  num_runtime_threads = flags_obj.num_gpus
-  if not flags_obj.datasets_num_private_threads:
-    flags_obj.datasets_num_private_threads = min(
-        cpu_count - total_gpu_thread_count - num_runtime_threads,
-        flags_obj.num_gpus * 8)
-    tf.compat.v1.logging.info('Set datasets_num_private_threads to %s',
-                              flags_obj.datasets_num_private_threads)
-
-
 def get_optimizer(learning_rate=0.1):
   """Returns optimizer to use."""
   # The learning_rate is overwritten at the beginning of each step by callback.
@@ -354,6 +327,12 @@ def define_keras_flags(dynamic_loss_scale=True):
       help='Number of steps per graph-mode loop. Only training step happens '
       'inside the loop. Callbacks will not be called inside. Will be capped at '
       'steps per epoch.')
+  flags.DEFINE_boolean(
+      name='use_tf_keras_layers', default=False,
+      help='Whether to use tf.keras.layers instead of tf.python.keras.layers.'
+      'It only changes imagenet resnet model layers for now. This flag is '
+      'a temporal flag during transition to tf.keras.layers. Do not use this '
+      'flag for external usage. this will be removed shortly.')
 
 
 def get_synth_data(height, width, num_channels, num_classes, dtype):

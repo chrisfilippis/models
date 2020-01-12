@@ -22,6 +22,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 
 from official.modeling import tf_utils
+from official.nlp import bert_modeling
 from official.nlp.modeling import losses
 from official.nlp.modeling import networks
 from official.nlp.modeling.networks import bert_classifier
@@ -133,26 +134,26 @@ class BertPretrainLossAndMetricLayer(tf.keras.layers.Layer):
     return final_loss
 
 
-def _get_transformer_encoder(bert_config,
-                             sequence_length,
-                             float_dtype=tf.float32):
+def get_transformer_encoder(bert_config,
+                            sequence_length,
+                            float_dtype=tf.float32):
   """Gets a 'TransformerEncoder' object.
 
   Args:
-    bert_config: A 'modeling.BertConfig' object.
+    bert_config: A 'modeling.BertConfig' or 'modeling.AlbertConfig' object.
     sequence_length: Maximum sequence length of the training data.
     float_dtype: tf.dtype, tf.float32 or tf.float16.
 
   Returns:
     A networks.TransformerEncoder object.
   """
-  return networks.TransformerEncoder(
+  kwargs = dict(
       vocab_size=bert_config.vocab_size,
       hidden_size=bert_config.hidden_size,
       num_layers=bert_config.num_hidden_layers,
       num_attention_heads=bert_config.num_attention_heads,
       intermediate_size=bert_config.intermediate_size,
-      activation=tf_utils.get_activation('gelu'),
+      activation=tf_utils.get_activation(bert_config.hidden_act),
       dropout_rate=bert_config.hidden_dropout_prob,
       attention_dropout_rate=bert_config.attention_probs_dropout_prob,
       sequence_length=sequence_length,
@@ -161,6 +162,12 @@ def _get_transformer_encoder(bert_config,
       initializer=tf.keras.initializers.TruncatedNormal(
           stddev=bert_config.initializer_range),
       float_dtype=float_dtype.name)
+  if isinstance(bert_config, bert_modeling.AlbertConfig):
+    kwargs['embedding_width'] = bert_config.embedding_size
+    return networks.AlbertTransformerEncoder(**kwargs)
+  else:
+    assert isinstance(bert_config, bert_modeling.BertConfig)
+    return networks.TransformerEncoder(**kwargs)
 
 
 def pretrain_model(bert_config,
@@ -199,7 +206,7 @@ def pretrain_model(bert_config,
   next_sentence_labels = tf.keras.layers.Input(
       shape=(1,), name='next_sentence_labels', dtype=tf.int32)
 
-  transformer_encoder = _get_transformer_encoder(bert_config, seq_length)
+  transformer_encoder = get_transformer_encoder(bert_config, seq_length)
   if initializer is None:
     initializer = tf.keras.initializers.TruncatedNormal(
         stddev=bert_config.initializer_range)
@@ -249,7 +256,8 @@ class BertSquadLogitsLayer(tf.keras.layers.Layer):
     """Implements call() for the layer."""
     sequence_output = inputs
 
-    input_shape = sequence_output.shape.as_list()
+    input_shape = tf_utils.get_shape_list(
+        sequence_output, name='sequence_output_tensor')
     sequence_length = input_shape[1]
     num_hidden_units = input_shape[2]
 
@@ -287,8 +295,8 @@ def squad_model(bert_config,
     initializer = tf.keras.initializers.TruncatedNormal(
         stddev=bert_config.initializer_range)
   if not hub_module_url:
-    bert_encoder = _get_transformer_encoder(bert_config, max_seq_length,
-                                            float_type)
+    bert_encoder = get_transformer_encoder(bert_config, max_seq_length,
+                                           float_type)
     return bert_span_labeler.BertSpanLabeler(
         network=bert_encoder, initializer=initializer), bert_encoder
 
@@ -332,7 +340,8 @@ def classifier_model(bert_config,
   maximum sequence length `max_seq_length`.
 
   Args:
-    bert_config: BertConfig, the config defines the core BERT model.
+    bert_config: BertConfig or AlbertConfig, the config defines the core
+      BERT or ALBERT model.
     float_type: dtype, tf.float32 or tf.bfloat16.
     num_labels: integer, the number of classes.
     max_seq_length: integer, the maximum input sequence length.
@@ -351,7 +360,7 @@ def classifier_model(bert_config,
         stddev=bert_config.initializer_range)
 
   if not hub_module_url:
-    bert_encoder = _get_transformer_encoder(bert_config, max_seq_length)
+    bert_encoder = get_transformer_encoder(bert_config, max_seq_length)
     return bert_classifier.BertClassifier(
         bert_encoder,
         num_classes=num_labels,

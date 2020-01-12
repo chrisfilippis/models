@@ -39,7 +39,7 @@ class OptimizerFactory(object):
       nesterov = False
       try:
         nesterov = params.nesterov
-      except KeyError:
+      except AttributeError:
         pass
       self._optimizer = functools.partial(
           tf.keras.optimizers.SGD,
@@ -93,12 +93,18 @@ class Model(object):
   def __init__(self, params):
     self._use_bfloat16 = params.architecture.use_bfloat16
 
+    if params.architecture.use_bfloat16:
+      policy = tf.compat.v2.keras.mixed_precision.experimental.Policy(
+          'mixed_bfloat16')
+      tf.compat.v2.keras.mixed_precision.experimental.set_policy(policy)
+
     # Optimization.
     self._optimizer_fn = OptimizerFactory(params.train.optimizer)
     self._learning_rate = learning_rates.learning_rate_generator(
         params.train.learning_rate)
 
     self._frozen_variable_prefix = params.train.frozen_variable_prefix
+    self._l2_weight_decay = params.train.l2_weight_decay
 
     # Checkpoint restoration.
     self._checkpoint = params.train.checkpoint.as_dict()
