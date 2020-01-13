@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.0-gpu-py3
+FROM tensorflow/tensorflow:1.12.0-gpu-py3
 
 RUN python --version
 
