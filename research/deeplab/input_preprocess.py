@@ -129,8 +129,8 @@ def preprocess_image_and_label(image,
     rr = tf.minimum(tf.cast(crop_height,tf.float32)/tf.cast(image_height,tf.float32), tf.cast(crop_width,tf.float32)/tf.cast(image_width,tf.float32))
     newh = tf.cast(tf.cast(image_height, tf.float32)*rr, tf.int32)
     neww = tf.cast((tf.cast(image_width, tf.float32)*rr), tf.int32)
-    if(not tf.equal(tf.cast(rr, tf.int32), 1)):
-      print('newwnewwnewwnewwnewwneww')
+    # if(not tf.equal(tf.cast(rr, tf.int32), 1)):
+    #   print('newwnewwnewwnewwnewwneww')
     processed_image = tf.image.resize_images(processed_image, (newh, neww), method=tf.image.ResizeMethod.BILINEAR, align_corners=True)
     processed_image = preprocess_utils.pad_to_bounding_box(processed_image, 0, 0, crop_height, crop_width, mean_pixel)
 

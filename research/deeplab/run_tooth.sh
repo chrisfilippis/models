@@ -135,6 +135,8 @@ python "${WORK_DIR}"/eval.py \
   --atrous_rates=18 \
   --output_stride=16 \
   --decoder_output_stride=4 \
+  --initialize_last_layer=False \
+  --last_layers_contain_logits_only=True \
   --eval_crop_size="${DIM_EVAL}" \
   --checkpoint_dir="${TRAIN_LOGDIR}" \
   --eval_logdir="${EVAL_LOGDIR}" \
