@@ -129,7 +129,7 @@ def preprocess_image_and_label(image,
     rr = tf.minimum(tf.cast(crop_height,tf.float32)/tf.cast(image_height,tf.float32), tf.cast(crop_width,tf.float32)/tf.cast(image_width,tf.float32))
     newh = tf.cast(tf.cast(image_height, tf.float32)*rr, tf.int32)
     neww = tf.cast((tf.cast(image_width, tf.float32)*rr), tf.int32)
-    if(newh.eval() != 1 and neww.eval() != 1):
+    if(not tf.equal(rr, 1)):
       print('newwnewwnewwnewwnewwneww')
       print(neww.eval())
       print(newh.eval())
