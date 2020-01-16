@@ -174,7 +174,10 @@ def main(unused_argv):
     one_hot_labels = tf.reshape(one_hot_labels, [-1, num_classes])
 
     for c in range(num_classes):
-      tf.logging.info('--------------------------------------' + str(num_classes))
+
+      with tf.Session() as sess:
+        # print('xxxxxxxxxxxxx', len(one_hot_labels[:, c].eval()))
+        print('------------------------------', predictions.eval())
 
       predictions_tag_c = '%s_class_%d' % (predictions_tag, c)
       tp, tp_op = tf.metrics.true_positives(
