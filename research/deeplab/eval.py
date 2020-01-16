@@ -177,7 +177,6 @@ def main(unused_argv):
 
       with tf.Session() as sess:
         print('xxxxxxxxxxxxx', len(one_hot_labels[:, c].eval()))
-      with tf.Session() as sess1:
         print('pppppppppppppp', len(one_hot_predictions[:, c].eval()))
       exit()
 
