@@ -177,8 +177,9 @@ def main(unused_argv):
 
       with tf.Session() as sess:
         print('xxxxxxxxxxxxx', len(one_hot_labels[:, c].eval()))
+      with tf.Session() as sess1:
         print(len('pppppppppppppp', one_hot_predictions[:, c].eval()))
-        exit()
+      exit()
 
       predictions_tag_c = '%s_class_%d' % (predictions_tag, c)
       tp, tp_op = tf.metrics.true_positives(
