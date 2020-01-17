@@ -144,7 +144,7 @@ def process_data(input_directory, output_directory, index_file='index.txt', forc
         "cat_3": (255, 0, 255),
         "cat_4": (255, 0 ,0),
         "cat_5": (0, 0, 255),
-        "cat_6": (0, 0, 0)
+        "cat_6": (0, 255, 255)
     }
 
     masks_dir = os.path.join(output_directory, 'masks')
@@ -181,7 +181,7 @@ def process_data(input_directory, output_directory, index_file='index.txt', forc
 
         image = cv2.imread(os.path.join(input_directory, image_name), -1)
         mask = np.ones(image.shape, dtype=np.uint8)
-        mask[:,0:image.shape[1]] = (0, 255, 255) 
+        mask[:,0:image.shape[1]] = (0, 0, 0)
 
         channel_count = image.shape[2]  # i.e. 3 or 4 depending on your image
         ignore_mask_color = (255,)*channel_count
@@ -203,4 +203,4 @@ def process_data(input_directory, output_directory, index_file='index.txt', forc
             outfile.writelines(img +'\n')
 
 if __name__ == "__main__":
-    process_data('C:\\Projects\\tooth_damage_detection_deeplab\\data\\annotator\\training\\', 'C:\\Projects\\tooth_damage_detection_deeplab\\data\\output\\')
+    process_data('C:\\Projects\\tf_models\my_models\models\\research\deeplab\datasets\\tooth\\annotator\\training\\', 'C:\\Projects\\tf_models\my_models\models\\research\deeplab\\datasets\\tooth\\annotator\\output\\')
