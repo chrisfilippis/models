@@ -190,8 +190,8 @@ def main(unused_argv):
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
 
-      iou = tf.Print(
-        iou, [iou], str(c) + '/' +str(num_classes) + '[iou]', name='iou')
+      tp_fp_fn_op = tf.Print(
+        tp_fp_fn_op, [tp_fp_fn_op], str(c) + '/' +str(num_classes) + '[tp_fp_fn_op]', name='tp_fp_fn_op')
 
       one_hot_predictions = tf.Print(
         one_hot_predictions, [one_hot_predictions], str(c) + '/' +str(num_classes) + '[one_hot_predictions]', name='one_hot_predictions')
