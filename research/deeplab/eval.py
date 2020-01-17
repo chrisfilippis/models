@@ -192,8 +192,10 @@ def main(unused_argv):
       iou = tf.where(tf.greater(tp + fn, 0.0),
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
-      metric_map['eval/%s' % predictions_tag_c] = (iou, tp_fp_fn_op)
+
       iou = tf.Print(iou, [iou], str(c) + '[iou]', name='iouiouiouiouiou')
+      metric_map['eval/%s' % predictions_tag_c] = (iou, tp_fp_fn_op)
+      
 
     (metrics_to_values,
      metrics_to_updates) = contrib_metrics.aggregate_metric_map(metric_map)
