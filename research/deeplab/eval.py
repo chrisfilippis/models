@@ -172,10 +172,10 @@ def main(unused_argv):
     one_hot_predictions = tf.reshape(one_hot_predictions, [-1, num_classes])
     one_hot_labels = tf.one_hot(labels, num_classes)
     one_hot_labels = tf.reshape(one_hot_labels, [-1, num_classes])
+    
+    for c in range(num_classes): 
 
-    tt = one_hot_labels[:, c]
-
-    for c in range(num_classes):     
+      tt = one_hot_labels[:, c]    
 
       predictions_tag_c = '%s_class_%d' % (predictions_tag, c)
       tp, tp_op = tf.metrics.true_positives(
