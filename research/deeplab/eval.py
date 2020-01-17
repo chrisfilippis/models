@@ -173,6 +173,8 @@ def main(unused_argv):
     one_hot_labels = tf.one_hot(labels, num_classes)
     one_hot_labels = tf.reshape(one_hot_labels, [-1, num_classes])
 
+    tt = one_hot_labels[:, c]
+
     for c in range(num_classes):     
 
       predictions_tag_c = '%s_class_%d' % (predictions_tag, c)
@@ -189,6 +191,9 @@ def main(unused_argv):
       iou = tf.where(tf.greater(tp + fn, 0.0),
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
+
+      tt = tf.Print(
+        tt, [tt], str(c) + '/' +str(num_classes) + '[tt]', name='tt')
 
       one_hot_predictions = tf.Print(
         one_hot_predictions, [one_hot_predictions], str(c) + '/' +str(num_classes) + '[one_hot_predictions]', name='one_hot_predictions')
