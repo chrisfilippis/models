@@ -193,6 +193,7 @@ def main(unused_argv):
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
       metric_map['eval/%s' % predictions_tag_c] = (iou, tp_fp_fn_op)
+      iou = tf.Print(iou, [iou], str(c) + '[iou]', name='iouiouiouiouiou')
 
     (metrics_to_values,
      metrics_to_updates) = contrib_metrics.aggregate_metric_map(metric_map)
