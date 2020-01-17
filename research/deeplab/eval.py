@@ -193,7 +193,7 @@ def main(unused_argv):
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
 
-      iou = tf.Print(iou, [iou], str(c) + '[iou]', name='iouiouiouiouiou')
+      iou = tf.Print(iou, [iou], str(c) + '[iou]', name='iou')
       metric_map['eval/%s' % predictions_tag_c] = (iou, tp_fp_fn_op)
       
 
