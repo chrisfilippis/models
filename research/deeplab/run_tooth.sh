@@ -133,7 +133,7 @@ python "${WORK_DIR}"/eval.py \
   --atrous_rates=6 \
   --atrous_rates=12 \
   --atrous_rates=18 \
-  --eval_batch_size=2 \
+  # --eval_batch_size=2 \
   --output_stride=16 \
   --decoder_output_stride=4 \
   --initialize_last_layer=False \
