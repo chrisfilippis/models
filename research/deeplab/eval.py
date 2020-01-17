@@ -176,7 +176,7 @@ def main(unused_argv):
     for c in range(num_classes):
 
       one_hot_predictions = tf.Print(
-        one_hot_predictions, [one_hot_predictions], '[one_hot_predictions]', name='one_hot_predictions')
+        one_hot_predictions, [one_hot_predictions], str(c) + '[one_hot_predictions]', name='one_hot_predictions')
 
       predictions_tag_c = '%s_class_%d' % (predictions_tag, c)
       tp, tp_op = tf.metrics.true_positives(
