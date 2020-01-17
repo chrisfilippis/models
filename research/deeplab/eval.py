@@ -190,11 +190,13 @@ def main(unused_argv):
                      tp / (tp + fn + fp),
                      tf.constant(np.NaN))
 
+      iou = tf.Print(
+        iou, [iou], str(c) + '/' +str(num_classes) + '[iou]', name='iou')
+
       one_hot_predictions = tf.Print(
-        one_hot_predictions, [one_hot_predictions], str(c) + ' /' +str(num_classes) + '[one_hot_predictions]', name='one_hot_predictions')
+        one_hot_predictions, [one_hot_predictions], str(c) + '/' +str(num_classes) + '[one_hot_predictions]', name='one_hot_predictions')
 
       metric_map['eval/%s' % predictions_tag_c] = (iou, tp_fp_fn_op)
-      
 
     (metrics_to_values,
      metrics_to_updates) = contrib_metrics.aggregate_metric_map(metric_map)
