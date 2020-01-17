@@ -85,7 +85,7 @@ _PASCAL_VOC_SEG_INFORMATION = DatasetDescriptor(
         'trainval': 84,
         'val': 34,
     },
-    num_classes=6,
+    num_classes=7,
     ignore_label=0,
 )
 
